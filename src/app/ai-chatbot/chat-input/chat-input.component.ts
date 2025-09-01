@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'chat-input',
@@ -6,10 +6,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./chat-input.component.scss']
 })
 export class ChatInputComponent implements OnInit {
+  @ViewChild("")
+  prompt: string = "";
 
   constructor() { }
 
   ngOnInit() {
   }
 
+
+  onChange(event: any) {
+    console.log(event);
+  }
 }
