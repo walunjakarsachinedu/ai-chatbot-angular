@@ -64,6 +64,7 @@ export type Customization = {
   personas: Persona[];
   defaultPersonaId?: string;
   activePersonaId?: string;
+  timeStamp?: number;
 };
 
 // Root type

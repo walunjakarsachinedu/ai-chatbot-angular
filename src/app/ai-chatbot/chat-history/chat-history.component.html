@@ -1,3 +1,13 @@
-<p>
-  chat-history works!
-</p>
+<div class="sidebar-slider" [class.sidebar-slide-in]="sidebarShow">
+  <div class="sidebar-close" (click)="toggleSidebar()">
+    <i class="bi bi-x-circle text-dark"></i>
+  </div>
+  <div class="sidebar-content">
+    <div class="mb-4"><b>Chats History</b></div>
+    @for (item of history; track $index) {
+      <div class="history-item" (click)="setChatId(item.id)" [class.selected-history-item]="item.id == selectedChatId"> 
+        {{item.title}}
+      </div>
+    }
+  </div>
+</div>

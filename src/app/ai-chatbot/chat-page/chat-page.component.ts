@@ -1,43 +1,109 @@
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild } from '@angular/core';
 import 'deep-chat';
+import { Title } from '@angular/platform-browser';
+import { ChatServiceService, Conversation } from '../chat-service.service';
+import { ChatHistoryComponent } from '../chat-history/chat-history.component';
 
 @Component({
   selector: 'chat-page',
   templateUrl: './chat-page.component.html',
   styleUrls: ['./chat-page.component.scss'],
+  imports: [ChatHistoryComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ChatPageComponent implements AfterViewInit {
   @ViewChild('chatRef', { static: true }) chatElement!: ElementRef<HTMLElement>;
 
+  isSidebarVisible: boolean = false;
   connect?: {handler: any, stream: boolean};
   stream: boolean = true;
-
+  chatId?: string; 
   history: {role: string, text: string}[] = [];
+  title?: string;
+  chatTimeStamp?: number;
 
-  constructor() { 
+  constructor(private titleService: Title, private chatService: ChatServiceService) { 
+    if(chatService.history[0]) {
+      this.chatId = chatService.history[0].id;
+      this.history = chatService.history[0].conversation;
+      if(chatService.history[0].title) {
+        this.title = chatService.history[0].title;
+        titleService.setTitle(chatService.history[0].title);
+      }
+    } 
     this.connect = {
       handler: this.stream ? this.streamHandler : this.apiHandler,
       stream: this.stream ?? undefined
     }
+
+    chatService.chatId$.subscribe((chatId) => {
+      const conversation = this.chatService.getHistory().find(history => history.id == chatId);
+      if(!conversation) return;
+      this.resetToExistingConversation(conversation);
+    })
+  }
+
+  resetToExistingConversation(conversation: Conversation) {
+    this.chatId = conversation.id;
+    this.history = conversation.conversation;
+    if(conversation.title) {
+      this.title = conversation.title;
+      this.titleService.setTitle(conversation.title);
+    }
+    this.chatRef.clearMessages(false);
+    this.history.forEach((msg) => {
+      this.chatRef.addMessage(msg);
+    })
   }
 
   ngAfterViewInit(): void {
-    const chatRef = this.chatElement.nativeElement as unknown as {onMessage: (msg: any) => void};
-    chatRef.onMessage = this.onMessage.bind(this);
+    this.chatRef.onMessage = this.onMessage.bind(this);
   }
 
+  startNewChat() {
+    this.history = [];
+    this.chatId = undefined;
+    this.title = undefined;
+    this.titleService.setTitle("AI Chatbot");
+    if(this.chatRef) this.chatRef.clearMessages();
+  }
 
-  onMessage = (body: any) => {
-    if(!body.isHistory) {
-      this.history.push(body.message);
+  get chatRef() {
+    return this.chatElement.nativeElement as any; 
+  }
+
+  onMessage = async (body: any) => {
+    if(body.isHistory) return;
+
+    this.history.push(body.message);
+    if(this.history.length == 2) this.setTitleOfChat().then((title) => {
+      this.chatId = this.chatService.storeHistory(title, this.history);
+    });
+    else {
+      if(this.chatId) {
+        this.chatService.replaceHistory({id: this.chatId, title: this.title, conversation: this.history, timeStamp: this.chatTimeStamp!});
+        if(!this.title) this.setTitleOfChat().then((title) => {
+          this.chatService.replaceHistory({id: this.chatId!, title, conversation: this.history, timeStamp: this.chatTimeStamp!})
+        });
+      }
     }
   }
 
+  setTitleOfChat = async () => {
+    const prompt = {role: "user", "text": "Generate a very short conversation title (3-5 words max) based only on this chat history. The title should reflect the tone of the conversation. Return only the title text, no explanations or extra text."};
+    const response = await this.sendPrompt([...this.history, prompt], false);
+    const data = await response.json();
+    const title = data.message?.content;
+    if (title) {
+      this.titleService.setTitle(data.message?.content);
+      this.title = title;
+      return data.message?.content;
+    }
+  }
 
   streamHandler = async (body: any, signals: any) => {
     try {
-      const res = await this.sendPrompt(body, true);
+      const res = await this.sendPrompt(this.history, true);
       const reader = res.body!.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
@@ -85,7 +151,7 @@ export class ChatPageComponent implements AfterViewInit {
   /** handler for non-stream response */
   apiHandler = async (body: any, signals: any) => {
     try {
-      const response = await this.sendPrompt(body, false);
+      const response = await this.sendPrompt(this.history, false);
       const data = await response.json();
 
       if (data.message?.content) {
@@ -98,8 +164,8 @@ export class ChatPageComponent implements AfterViewInit {
     }
   };
 
-  sendPrompt = async (body: any, useStream: boolean) => {
-    const messages = this.history.map((msg: any) => ({
+  sendPrompt = async (history: any, useStream: boolean) => {
+    const messages = history.map((msg: any) => ({
       role: msg.role,
       content: msg.text,
     }));

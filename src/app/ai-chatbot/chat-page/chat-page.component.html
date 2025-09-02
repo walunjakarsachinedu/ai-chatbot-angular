@@ -1,16 +1,48 @@
-<div class="m-2 d-flex">
-    <i class="me-2 bi bi-clock-history"></i>
+<!-- <chat-history></chat-history> -->
+<chat-history [(sidebarShow)]="isSidebarVisible"></chat-history>
+<div class="m-2 d-flex position-relative">
+    <div class="position-absolute d-flex gap-4">
+        <div class="header-btn" (click)="isSidebarVisible = true"> 
+            <i class="me-2 bi bi-clock-history"></i> History 
+        </div>
+        <!-- <div class="header-btn"> <i class="bi bi-plus-circle me-2"></i> New Chat </div> -->
+    </div>
     <b class="flex-grow-1 text-center">AI Chatbot</b>
+    <div class="absolute-right">
+        <div class="header-btn" (click)="startNewChat()"> 
+            <i class="bi bi-plus-circle me-2"></i> New Chat 
+        </div>
+    </div>
 </div>
 <br>
 <div class="d-flex align-items-stretch">
     <deep-chat #chatRef
-        style="width: 100%; height: calc(100vh - 70px); padding-top: 10px; border: none;"
+        style="width: 100%; height: calc(100vh - 100px); padding-top: 10px; border: none;"
         messageStyles='{"default": {"shared": {"innerContainer": {"fontSize": "1rem"}}}}'
         inputAreaStyle='{"fontSize": "1rem"}'
         [history]="history"
         [connect]="connect"
         demo="true"
         connect='{"stream": true}'
-    > </deep-chat>
+    >
+    
+        <div
+            style="
+                width: 200px;
+                background-color: #f3f3f3;
+                border-radius: 10px;
+                padding: 12px;
+                padding-bottom: 15px;
+            "
+            >
+            <div>
+                <div style="text-align: center; margin-bottom: 8px; font-size: 16px">
+                <b>Welcome 👋</b>
+                </div>
+                <div style="font-size: 15px; line-height: 20px">
+                Start a chat anytime and ask me anything. I’m here to help make things simple.
+                </div>
+            </div>
+        </div>
+    </deep-chat>
 </div>
