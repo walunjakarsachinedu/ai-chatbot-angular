@@ -21,6 +21,7 @@ export class ChatServiceService {
     this.setSelectedChat(localStorage.getItem("selected_chat_id") ?? null);
 
     this.chatId$.subscribe((id) => {
+      this.selectedChatId = id;
       if(id) {
         localStorage.setItem("selected_chat_id", id);
       }
@@ -36,7 +37,6 @@ export class ChatServiceService {
 
   setSelectedChat(chatId: string|null): void {
     this.selectedChat.next(chatId);
-    this.selectedChatId = chatId;
   }
 
   /** Store chat as new conversation history. */
@@ -47,16 +47,17 @@ export class ChatServiceService {
       conversation: conversation,
       timeStamp: Date.now()
     }; 
-    this.selectedChat.next(obj.id);
-    this.history.push(obj);
+
     localStorage.setItem(`chat_history_${obj.id}`, JSON.stringify(obj));
+    this.setSelectedChat(obj.id);
+    this.history.push(obj);
     return obj.id;
   }
 
   /** Replace Existing conversation history. */
   replaceHistory(conversation: Conversation) {
     localStorage.setItem(`chat_history_${conversation.id}`, JSON.stringify(conversation));
-    this.selectedChat.next(conversation.id);
+    this.setSelectedChat(conversation.id);
   }
 
 

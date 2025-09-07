@@ -40,7 +40,12 @@ export class ChatPageComponent implements AfterViewInit {
     chatService.chatId$.subscribe((chatId) => {
       const conversation = this.chatService.getHistory().find(history => history.id == chatId);
       if(!conversation) return;
-      this.resetToExistingConversation(conversation);
+      if(this.chatRef) this.resetToExistingConversation(conversation);
+      else {
+        setTimeout(() => {
+          this.resetToExistingConversation(conversation);
+        }, 0);
+      }
     })
   }
 
@@ -71,7 +76,7 @@ export class ChatPageComponent implements AfterViewInit {
   }
 
   get chatRef() {
-    return this.chatElement.nativeElement as any; 
+    return this.chatElement?.nativeElement as any; 
   }
 
   onMessage = async (body: any) => {

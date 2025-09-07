@@ -1,27 +1,33 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { ChatServiceService, Conversation } from '../chat-service.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'chat-history',
   templateUrl: './chat-history.component.html',
   styleUrls: ['./chat-history.component.scss']
 })
-export class ChatHistoryComponent {
+export class ChatHistoryComponent implements OnDestroy {
   @Output() onChatSelect = new EventEmitter<void>();
 
   history: Conversation[] = [];
   selectedChatId: string|null = null;
 
+  chatSubscription?: Subscription;
+
   constructor(private chatService: ChatServiceService) {
-    this.history = this.chatService.getHistory();
-    if(this.history[0]) this.selectedChatId = this.history[0].id;
-    // TODO: dispose onDestroy
-    chatService.chatId$.subscribe((chatId) => {
+    this.history = chatService.getHistory();
+    this.chatSubscription = chatService.chatId$.subscribe((chatId) => {
       if(chatId == null) this.selectedChatId = null;
-      const conversation = this.chatService.getHistory().find(history => history.id == chatId);
+      const conversation = chatService.getHistory().find(history => history.id == chatId);
       if(!conversation) return;
       this.selectedChatId = conversation.id;
+      this.history = chatService.getHistory();
     })
+  }
+
+  ngOnDestroy(): void {
+    this.chatSubscription?.unsubscribe();
   }
 
   setChatId(chatId: string) {
