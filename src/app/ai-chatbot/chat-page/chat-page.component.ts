@@ -3,6 +3,7 @@ import 'deep-chat';
 import { Title } from '@angular/platform-browser';
 import { ChatServiceService, Conversation } from '../chat-service.service';
 import { ChatSidebar } from '../chat-sidebar/chat-sidebar.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'chat-page',
@@ -172,12 +173,12 @@ export class ChatPageComponent implements AfterViewInit {
     }));
 
     const payload = {
-      model: "hf.co/bartowski/Llama-3.2-3B-Instruct-GGUF:Q4_K_M",
+      model: environment.aiModel.model,
       messages,
       stream: useStream,
     };
 
-    return await fetch('http://localhost:11434/api/chat', {
+    return await fetch(environment.aiModel.apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
