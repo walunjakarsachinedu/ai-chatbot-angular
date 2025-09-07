@@ -15,13 +15,9 @@ export class ChatHistoryComponent {
   constructor(private chatService: ChatServiceService) {
     this.history = this.chatService.getHistory();
     if(this.history[0]) this.selectedChatId = this.history[0].id;
-
-    window.addEventListener("storage", (): void => {
-      this.history = this.chatService.getHistory();
-    });
-
     // TODO: dispose onDestroy
     chatService.chatId$.subscribe((chatId) => {
+      if(chatId == null) this.selectedChatId = null;
       const conversation = this.chatService.getHistory().find(history => history.id == chatId);
       if(!conversation) return;
       this.selectedChatId = conversation.id;
@@ -29,7 +25,7 @@ export class ChatHistoryComponent {
   }
 
   setChatId(chatId: string) {
-    this.chatService.setChatId(chatId);
+    this.chatService.setSelectedChat(chatId);
     this.onChatSelect.emit();
   }
 }

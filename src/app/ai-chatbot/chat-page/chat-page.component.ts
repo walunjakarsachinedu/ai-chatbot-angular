@@ -22,12 +22,13 @@ export class ChatPageComponent implements AfterViewInit {
   chatTimeStamp?: number;
 
   constructor(private titleService: Title, private chatService: ChatServiceService) { 
-    if(chatService.history[0]) {
-      this.chatId = chatService.history[0].id;
-      this.history = chatService.history[0].conversation;
-      if(chatService.history[0].title) {
-        this.title = chatService.history[0].title;
-        titleService.setTitle(chatService.history[0].title);
+    const selectedChat = chatService.history.find(c => c.id == chatService.selectedChatId);
+    if(selectedChat) {
+      this.chatId = selectedChat.id;
+      this.history = selectedChat.conversation;
+      if(selectedChat.title) {
+        this.title = selectedChat.title;
+        titleService.setTitle(selectedChat.title);
       }
     } 
     this.connect = {
@@ -65,6 +66,7 @@ export class ChatPageComponent implements AfterViewInit {
     this.title = undefined;
     this.titleService.setTitle("AI Chatbot");
     if(this.chatRef) this.chatRef.clearMessages();
+    this.chatService.setSelectedChat(null);
   }
 
   get chatRef() {

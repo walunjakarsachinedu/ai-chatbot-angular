@@ -17,13 +17,26 @@ export class ChatServiceService {
 
   constructor() { 
     this.history = this.getHistory(); 
+
+    this.setSelectedChat(localStorage.getItem("selected_chat_id") ?? null);
+
+    this.chatId$.subscribe((id) => {
+      if(id) {
+        localStorage.setItem("selected_chat_id", id);
+      }
+      else {
+        localStorage.removeItem("selected_chat_id");
+      }
+    })
   }
 
   private selectedChat = new BehaviorSubject<string|null>(null);
   chatId$ = this.selectedChat.asObservable();
+  selectedChatId: string|null = null;
 
-  setChatId(chatId: string|null): void {
+  setSelectedChat(chatId: string|null): void {
     this.selectedChat.next(chatId);
+    this.selectedChatId = chatId;
   }
 
   /** Store chat as new conversation history. */
@@ -34,15 +47,16 @@ export class ChatServiceService {
       conversation: conversation,
       timeStamp: Date.now()
     }; 
+    this.selectedChat.next(obj.id);
     this.history.push(obj);
     localStorage.setItem(`chat_history_${obj.id}`, JSON.stringify(obj));
-
     return obj.id;
   }
 
   /** Replace Existing conversation history. */
   replaceHistory(conversation: Conversation) {
     localStorage.setItem(`chat_history_${conversation.id}`, JSON.stringify(conversation));
+    this.selectedChat.next(conversation.id);
   }
 
 

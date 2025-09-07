@@ -1,4 +1,4 @@
-<div class="mb-4"><b>Chats History</b></div>
+<div class="ms-1 mb-4"><b>Chats History</b></div>
 @for (item of history; track $index) {
   <div class="history-item" (click)="setChatId(item.id)" [class.selected-history-item]="item.id == selectedChatId"> 
     {{item.title}}
