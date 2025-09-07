@@ -18,11 +18,11 @@ export class ChatHistoryComponent implements OnDestroy {
   constructor(private chatService: ChatServiceService) {
     this.history = chatService.getHistory();
     this.chatSubscription = chatService.chatId$.subscribe((chatId) => {
+      this.history = chatService.getHistory();
       if(chatId == null) this.selectedChatId = null;
       const conversation = chatService.getHistory().find(history => history.id == chatId);
       if(!conversation) return;
       this.selectedChatId = conversation.id;
-      this.history = chatService.getHistory();
     })
   }
 
@@ -33,5 +33,10 @@ export class ChatHistoryComponent implements OnDestroy {
   setChatId(chatId: string) {
     this.chatService.setSelectedChat(chatId);
     this.onChatSelect.emit();
+  }
+
+  deleteChat(chatId: string) {
+    this.chatService.deleteChat(chatId);
+    this.history = this.history.filter(chat => chat.id != chatId);
   }
 }

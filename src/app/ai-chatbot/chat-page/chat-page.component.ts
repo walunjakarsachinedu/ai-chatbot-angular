@@ -39,7 +39,6 @@ export class ChatPageComponent implements AfterViewInit {
 
     chatService.chatId$.subscribe((chatId) => {
       const conversation = this.chatService.getHistory().find(history => history.id == chatId);
-      if(!conversation) return;
       if(this.chatRef) this.resetToExistingConversation(conversation);
       else {
         setTimeout(() => {
@@ -49,10 +48,10 @@ export class ChatPageComponent implements AfterViewInit {
     })
   }
 
-  resetToExistingConversation(conversation: Conversation) {
-    this.chatId = conversation.id;
-    this.history = conversation.conversation;
-    if(conversation.title) {
+  resetToExistingConversation(conversation: Conversation | undefined) {
+    this.chatId = conversation?.id;
+    this.history = conversation?.conversation ?? [];
+    if(conversation?.title) {
       this.title = conversation.title;
       this.titleService.setTitle(conversation.title);
     }

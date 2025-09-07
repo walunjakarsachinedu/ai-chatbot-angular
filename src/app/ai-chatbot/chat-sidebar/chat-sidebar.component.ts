@@ -8,7 +8,8 @@ import { Sidebar } from "../../common/sidebar/sidebar.component";
   imports: [Sidebar, ChatHistoryComponent],
   template: `
     <sidebar #sidebarRef>
-      <div style="max-height: 500px; overflow-y: auto;">
+      <div style="max-height: 500px; overflow-y: auto; width: 100%; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis;">
         <chat-history (onChatSelect)="sidebarRef.closeSidebar()"></chat-history>
       </div>
       <!-- <br><br>

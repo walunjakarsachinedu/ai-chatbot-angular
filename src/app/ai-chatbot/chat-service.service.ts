@@ -56,6 +56,7 @@ export class ChatServiceService {
 
   /** Replace Existing conversation history. */
   replaceHistory(conversation: Conversation) {
+    conversation.timeStamp = Date.now();
     localStorage.setItem(`chat_history_${conversation.id}`, JSON.stringify(conversation));
     this.setSelectedChat(conversation.id);
   }
@@ -79,10 +80,17 @@ export class ChatServiceService {
         }
       }
     }
-
+    
     return history.sort((a, b) => b.timeStamp - a.timeStamp);
   }
 
+  deleteChat(chatId: string|null) {
+    if(chatId == this.selectedChatId) {
+      this.setSelectedChat(null);
+    }
+    localStorage.removeItem(`chat_history_${chatId}`); 
+    this.history = this.history.filter(chat => chat.id != chatId);
+  }
 }
 
 

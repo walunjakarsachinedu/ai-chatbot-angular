@@ -6,13 +6,31 @@
     cursor: pointer;
     margin-top: 2px;
     margin-bottom: 2px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .history-item:hover {
-    background-color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+
+    .delete-btn {
+      display: block;
+    }
 } 
 
 .history-item.selected-history-item {
-    background-color: rgba(255, 255, 255, 0.733);
+    background-color: rgba(100, 100, 100, 0.5);
     border-radius: 4px;
+}
+
+.delete-btn {
+  display: none;
+  padding: 0px 2px;
+  border-radius: 2px;
+}
+.delete-btn:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.535);
 }

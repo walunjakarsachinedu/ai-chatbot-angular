@@ -1,6 +1,14 @@
-<div class="ms-1 mb-4"><b>Chats History</b></div>
-@for (item of history; track $index) {
-  <div class="history-item" (click)="setChatId(item.id)" [class.selected-history-item]="item.id == selectedChatId"> 
-    {{item.title}}
-  </div>
-}
+<div style="width: 100%;">
+  <div class="ms-1 mb-4"><b>Chats History</b></div>
+  @for (item of history; track $index) {
+    <div class="history-item d-flex w-100 align-items-center" 
+        (click)="setChatId(item.id)" 
+        [class.selected-history-item]="item.id == selectedChatId"
+    > 
+      <div class="flex-grow-1 text-truncate">{{item.title}}</div> 
+      <div class="delete-btn ms-2 flex-shrink-0">
+        <i class="bi bi-trash3" (click)="deleteChat(item.id); $event.stopPropagation()"></i>
+      </div>
+    </div>
+  }
+</div>
