@@ -9,7 +9,7 @@
     bottom: 0;
     background-color: rgb(232 232 232); // #FF4455;
     transform: translateX(-100%);
-    transition: ease-in-out 300ms transform;
+    transition: ease-out 300ms transform;
     width: 300px;
     z-index: 9999999;
     box-shadow: 0px 10px 10px grey;
@@ -17,7 +17,7 @@
 
 .sidebar-slider.sidebar-slide-in {
     transform: translateX(0%);
-    transition: ease-in-out 600ms transform;
+    transition: ease-out 500ms transform;
 }
 
 .sidebar-close {

@@ -2,13 +2,13 @@ import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, ViewChild
 import 'deep-chat';
 import { Title } from '@angular/platform-browser';
 import { ChatServiceService, Conversation } from '../chat-service.service';
-import { ChatHistoryComponent } from '../chat-history/chat-history.component';
+import { ChatSidebar } from '../chat-sidebar/chat-sidebar.component';
 
 @Component({
   selector: 'chat-page',
   templateUrl: './chat-page.component.html',
   styleUrls: ['./chat-page.component.scss'],
-  imports: [ChatHistoryComponent],
+  imports: [ChatSidebar],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ChatPageComponent implements AfterViewInit {

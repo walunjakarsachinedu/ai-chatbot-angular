@@ -1,9 +1,9 @@
 <!-- <chat-history></chat-history> -->
-<chat-history #chatHistory></chat-history>
+<chat-sidebar #chatSidebar></chat-sidebar>
 <div class="m-2 d-flex position-relative">
     <div class="position-absolute d-flex gap-4">
-        <div class="header-btn" (click)="chatHistory.sidebarRef.showSidebar()"> 
-            <i class="me-2 bi bi-clock-history"></i> History 
+        <div class="header-btn" (click)="chatSidebar.sidebarRef.showSidebar()"> 
+          <i class="bi bi-layout-sidebar"></i>
         </div>
         <!-- <div class="header-btn"> <i class="bi bi-plus-circle me-2"></i> New Chat </div> -->
     </div>

@@ -23,7 +23,7 @@ export class Sidebar {
     this.sidebarShowChange.emit(this.sidebarShow);
   }
 
-  hideSidebar(): void {
+  closeSidebar(): void {
     this.sidebarShow = false;
     this.sidebarShowChange.emit(this.sidebarShow);
   }

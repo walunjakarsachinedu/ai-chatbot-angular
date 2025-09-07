@@ -1,18 +1,15 @@
-import { Component, ViewChild } from '@angular/core';
-import { Sidebar } from '../../common/sidebar/sidebar.component';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { ChatServiceService, Conversation } from '../chat-service.service';
 
 @Component({
   selector: 'chat-history',
   templateUrl: './chat-history.component.html',
-  imports: [Sidebar],
   styleUrls: ['./chat-history.component.scss']
 })
 export class ChatHistoryComponent {
-  @ViewChild("sidebar") sidebarRef!: Sidebar;
+  @Output() onChatSelect = new EventEmitter<void>();
 
   history: Conversation[] = [];
-
   selectedChatId: string|null = null;
 
   constructor(private chatService: ChatServiceService) {
@@ -33,11 +30,6 @@ export class ChatHistoryComponent {
 
   setChatId(chatId: string) {
     this.chatService.setChatId(chatId);
-    this.toggleSidebar();
-  }
-
-  toggleSidebar(): void {
-    console.log("toggleSidebar: ", this.sidebarRef);
-    this.sidebarRef.toggleSidebar();
+    this.onChatSelect.emit();
   }
 }
