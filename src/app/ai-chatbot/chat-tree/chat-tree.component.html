@@ -1,7 +1,0 @@
-<div class="text-end">{{ chatNode?.prompt }}</div>
-<div>{{ chatNode?.response }}</div>
-<br>
-
-@if (chatNode && (chatNode.selectedChild || chatNode.selectedChild == 0) && chatNode.children && chatNode.selectedChild < chatNode.children.length) {
-  <chat-tree [chatNode]="chatNode.children[chatNode.selectedChild]"></chat-tree>
-}

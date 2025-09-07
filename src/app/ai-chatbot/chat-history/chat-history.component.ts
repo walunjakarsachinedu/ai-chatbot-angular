@@ -1,14 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { Sidebar } from '../../common/sidebar/sidebar.component';
 import { ChatServiceService, Conversation } from '../chat-service.service';
 
 @Component({
   selector: 'chat-history',
   templateUrl: './chat-history.component.html',
+  imports: [Sidebar],
   styleUrls: ['./chat-history.component.scss']
 })
-export class ChatHistoryComponent implements OnInit {
-  @Input() sidebarShow: boolean = false;
-  @Output() sidebarShowChange = new EventEmitter<boolean>();
+export class ChatHistoryComponent {
+  @ViewChild("sidebar") sidebarRef!: Sidebar;
 
   history: Conversation[] = [];
 
@@ -35,10 +36,8 @@ export class ChatHistoryComponent implements OnInit {
     this.toggleSidebar();
   }
 
-  ngOnInit(): void {}
-
   toggleSidebar(): void {
-    this.sidebarShow = !this.sidebarShow;
-    this.sidebarShowChange.emit(this.sidebarShow);
+    console.log("toggleSidebar: ", this.sidebarRef);
+    this.sidebarRef.toggleSidebar();
   }
 }

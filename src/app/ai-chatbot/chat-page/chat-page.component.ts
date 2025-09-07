@@ -14,7 +14,6 @@ import { ChatHistoryComponent } from '../chat-history/chat-history.component';
 export class ChatPageComponent implements AfterViewInit {
   @ViewChild('chatRef', { static: true }) chatElement!: ElementRef<HTMLElement>;
 
-  isSidebarVisible: boolean = false;
   connect?: {handler: any, stream: boolean};
   stream: boolean = true;
   chatId?: string; 
